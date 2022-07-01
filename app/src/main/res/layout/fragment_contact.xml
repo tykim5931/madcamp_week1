@@ -4,6 +4,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/header_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Contacts"
+            android:textSize="20dp"
+            android:layout_margin="8dp"
+            />
+
+        <Button
+            android:id="@+id/contact_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_baseline_contact_phone_24"
+            android:backgroundTint="#6A6A6A" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
@@ -17,7 +41,7 @@
         app:iconifiedByDefault="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/top_bar" />
 
 
     <androidx.recyclerview.widget.RecyclerView
