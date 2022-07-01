@@ -13,6 +13,7 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabexample.model.Phone
 import org.w3c.dom.Text
@@ -33,6 +34,8 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
         val btnPhone : AppCompatImageButton = itemView.findViewById(R.id.btnPhone)
         val textName : TextView = itemView.findViewById(R.id.textName)
         val textPhone : TextView = itemView.findViewById(R.id.textPhone)
+        val invisibleLayer : ConstraintLayout = itemView.findViewById(R.id.invisible_item)
+        val visibleLayer : ConstraintLayout = itemView.findViewById(R.id.visible_item)
 
         init {
             this.btnPhone.setOnClickListener {
@@ -41,6 +44,12 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
                     val intent = Intent(Intent.ACTION_CALL, uri)
                     itemView.context.startActivity(intent)
                 }
+            }
+            this.visibleLayer.setOnClickListener {
+                if (invisibleLayer.visibility == View.GONE)
+                    invisibleLayer.visibility = View.VISIBLE
+                else
+                    invisibleLayer.visibility = View.GONE
             }
         }
         fun setPhone(phone:Phone) {

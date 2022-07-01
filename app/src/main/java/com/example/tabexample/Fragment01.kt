@@ -60,6 +60,7 @@ class Fragment01 : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         PhoneBookSource(requireContext()).savePhoneBook(phoneList)
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,6 +105,7 @@ class Fragment01 : Fragment() {
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
         }
+
         binding.contactButton.setOnClickListener{
             val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
             requestLauncher.launch(intent)
