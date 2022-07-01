@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import org.w3c.dom.Text
 
@@ -36,7 +38,7 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<Holder>() {
 
 class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var mPhone: Phone? = null
-    val btnPhone : Button = itemView.findViewById(R.id.btnPhone)
+    val btnPhone : AppCompatImageButton = itemView.findViewById(R.id.btnPhone)
     val textName : TextView = itemView.findViewById(R.id.textName)
     val textPhone : TextView = itemView.findViewById(R.id.textPhone)
 
