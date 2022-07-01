@@ -1,6 +1,7 @@
 package com.example.tabexample.adapter
 
 import android.content.Context
+import android.net.Uri
 import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,7 @@ class GalleryAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = dataset[position]
-        holder.imageView.setImageResource(item.imageResourceId)
+        holder.imageView.setImageURI(Uri.parse(item.imageUriString))
     }
 
     override fun getItemCount() = dataset.size

@@ -1,7 +1,10 @@
 package com.example.tabexample.model
 
-import androidx.annotation.DrawableRes
+import android.net.Uri
+import com.beust.klaxon.Json
+
 
 data class GalleryImage(
-    @DrawableRes val imageResourceId: Int
+    @Json(name = "imageUriString")
+    val imageUriString: String
 )
