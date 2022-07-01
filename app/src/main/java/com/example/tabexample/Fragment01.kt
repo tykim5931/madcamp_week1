@@ -36,7 +36,6 @@ class Fragment01 : Fragment() {
 
     lateinit var mAdapter:PhoneAdapter
     var phoneList= mutableListOf<Phone>()
-    var searchText = ""
 
     lateinit var requestLauncher: ActivityResultLauncher<Intent>
 
@@ -109,38 +108,6 @@ class Fragment01 : Fragment() {
             val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
             requestLauncher.launch(intent)
         }
-    }
-
-
-    fun getPhoneNumbers(name:String) : List<Phone>{
-        val list = mutableListOf<Phone>()
-
-        // content resolver로 데이터를 가져옴
-        // 주소, 컬럼, 조건
-        val phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
-        val projections = arrayOf(ContactsContract.CommonDataKinds.Phone.CONTACT_ID //주소록의 id. 전화번호의 id는 phone._ID
-            , ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-            , ContactsContract.CommonDataKinds.Phone.NUMBER)
-        var where:String? = null
-        var whereValues:Array<String>? = null
-        if(name.isNotEmpty()){
-            where = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?" //번호로 검색하려면 Number
-            whereValues = arrayOf(name)
-        }
-        val optionSort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" asc" // sort ascending
-
-        context?.run{   /*context !null 인 경우 내부동작 실행.*/
-            val cursor = contentResolver.query(phoneUri, projections, where, whereValues, optionSort)
-            // 반복문으로 아이디, 이름 가져오면서 전화번호 조회 쿼리 한 번 더 돌린다
-            while(cursor?.moveToNext() == true){
-                val id = cursor?.getString(0)
-                val name = cursor?.getString(1)
-                var number = cursor?.getString(2)
-                val phone = Phone(id, name, number) // 개별 전화번호 데이터
-                list.add(phone) // 결과목록에 추가
-            }
-        }
-        return list
     }
 
 }

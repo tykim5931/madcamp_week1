@@ -63,15 +63,15 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
             }
             else if (filterString.trim{ it <= ' ' }.length <= 2){  // 공백제외 3글자 이하 -> 이름으로 검색.
                 for (phoneItem in list) {
-                    if (phoneItem.name?.contains(filterString) == true) filteredList.add(phoneItem)
+                    if (phoneItem.name?.contains(filterString,true) == true) filteredList.add(phoneItem)
                 }
                 results.values = filteredList
                 results.count = filteredList.size
                 //그 외의 경우(공백제외 2글자 초과) -> 이름/전화번호로 검색
             } else {
                 for (phoneItem in list) {
-                    if (phoneItem.name?.contains(filterString) == true
-                        || phoneItem.phone?.contains(filterString) == true
+                    if (phoneItem.name?.contains(filterString,true) == true
+                        || phoneItem.phone?.contains(filterString,true) == true
                     ) filteredList.add(phoneItem)
                 }
                 results.values = filteredList
