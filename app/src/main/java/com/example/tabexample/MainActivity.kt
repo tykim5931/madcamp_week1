@@ -28,10 +28,10 @@ class MainActivity : AppCompatActivity() {
         // 권한처리 후 일반 프로세스 시작.
         setContentView(R.layout.activity_main)
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
-
         val viewPager: ViewPager2 = findViewById(R.id.viewPager)
         val viewpagerFragmentAdapter = ViewPagerAdapter(this)
 
+        viewPager.setUserInputEnabled(false)
         viewPager.adapter = viewpagerFragmentAdapter
 
         //### TabLayout과 ViewPager2 연결

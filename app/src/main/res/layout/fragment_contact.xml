@@ -29,5 +29,4 @@
         app:layout_constraintTop_toBottomOf="@+id/search_view"/>
 <!--        tools:listitem="@layout/contact_item"/>-->
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>

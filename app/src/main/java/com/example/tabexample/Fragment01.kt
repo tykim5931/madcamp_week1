@@ -25,7 +25,6 @@ class Fragment01 : Fragment() {
     lateinit var mAdapter:PhoneAdapter
     var phoneList= mutableListOf<Phone>()
     var searchText = ""
-    var sortText = "asc"
 
     var searchViewTextListener: SearchView.OnQueryTextListener =
         object: SearchView.OnQueryTextListener{
@@ -43,7 +42,7 @@ class Fragment01 : Fragment() {
         _binding = FragmentContactBinding.inflate(inflater, container, false)
         binding.searchView.setOnQueryTextListener(searchViewTextListener) //adapting filter to madapter!
 
-        phoneList = getPhoneNumbers(sortText, searchText) as MutableList<Phone>
+        phoneList = getPhoneNumbers(searchText) as MutableList<Phone>
         mAdapter = PhoneAdapter(phoneList)
         binding.recycler.adapter = mAdapter
         binding.recycler.layoutManager = LinearLayoutManager(context)
@@ -51,9 +50,9 @@ class Fragment01 : Fragment() {
         return binding.root
     }
 
-    fun getPhoneNumbers(sort:String, name:String) : List<Phone>{
+    fun getPhoneNumbers(name:String) : List<Phone>{
         val list = mutableListOf<Phone>()
-        
+
         // content resolver로 데이터를 가져옴
         // 주소, 컬럼, 조건
         val phoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -66,7 +65,7 @@ class Fragment01 : Fragment() {
             where = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "=?" //번호로 검색하려면 Number
             whereValues = arrayOf(name)
         }
-        val optionSort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" $sort"
+        val optionSort = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" asc" // sort ascending
 
         context?.run{   /*context !null 인 경우 내부동작 실행.*/
             val cursor = contentResolver.query(phoneUri, projections, where, whereValues, optionSort)
