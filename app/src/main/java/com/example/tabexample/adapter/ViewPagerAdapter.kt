@@ -1,8 +1,11 @@
-package com.example.tabexample
+package com.example.tabexample.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.tabexample.Fragment01
+import com.example.tabexample.Fragment02
+import com.example.tabexample.Fragment03
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 

@@ -9,10 +9,17 @@ import android.Manifest
 import android.provider.ContactsContract
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tabexample.data.GalleryDatasource
+import com.example.tabexample.databinding.FragmentContactBinding
+import com.example.tabexample.databinding.FragmentGalleryBinding
+import com.example.tabexample.model.Phone
 
 
 /* contact Fragment */
 class Fragment01 : Fragment() {
+
+    private var _binding: FragmentContactBinding? = null
+    private val binding get() = _binding!!
 
     lateinit var mAdapter:PhoneAdapter
     var phoneList= mutableListOf<Phone>()
@@ -20,17 +27,16 @@ class Fragment01 : Fragment() {
     var sortText = "asc"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_contact, container, false)
-        var recyclerView: RecyclerView = view.findViewById(R.id.recycler)
-        setContentView(view)
-        return view
+        _binding = FragmentContactBinding.inflate(inflater, container, false)
+        setContentView()
+        return binding.root
     }
 
-    fun setContentView(view:View){
+    fun setContentView(){
         // phoneList를 세팅
         phoneList = getPhoneNumbers(sortText, searchText) as MutableList<Phone>
         mAdapter = PhoneAdapter(phoneList)
-        var recycler: RecyclerView = view.findViewById(R.id.recycler)
+        var recycler: RecyclerView = binding.recycler
         recycler.adapter = mAdapter
         recycler.layoutManager = LinearLayoutManager(context)
     }
