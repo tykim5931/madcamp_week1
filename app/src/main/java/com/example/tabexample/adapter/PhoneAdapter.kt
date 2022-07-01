@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
@@ -16,24 +18,17 @@ import com.example.tabexample.model.Phone
 import org.w3c.dom.Text
 
 
-class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Holder>() {
+class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Holder>(), Filterable {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item, parent, false)
-        return Holder(view)
-    }
+    var filteredPhone = ArrayList<Phone>()
+    var itemFilter = ItemFilter()
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
-
-    override fun onBindViewHolder(holder: Holder, position: Int) {
-        val phone = list[position]
-        holder.setPhone(phone)
+    init{
+        filteredPhone.addAll(list)
     }
 
     @SuppressLint("MissingPermission")
-    class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mPhone: Phone? = null
         val btnPhone : AppCompatImageButton = itemView.findViewById(R.id.btnPhone)
         val textName : TextView = itemView.findViewById(R.id.textName)
@@ -55,4 +50,59 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
         }
     }
 
+    inner class ItemFilter: Filter() {
+        override fun performFiltering(charSequence: CharSequence?): FilterResults {
+            val filterString = charSequence.toString()
+            val results = FilterResults()
+            println("charSequence: $charSequence")
+
+            val filteredList: ArrayList<Phone> = ArrayList<Phone>()
+            if (filterString.trim{ it <= ' ' }.isEmpty()){  // 검색 없으면 전체리스트
+                results.values = list
+                results.count = list.size
+            }
+            else if (filterString.trim{ it <= ' ' }.length <= 2){  // 공백제외 3글자 이하 -> 이름으로 검색.
+                for (phoneItem in list) {
+                    if (phoneItem.name?.contains(filterString) == true) filteredList.add(phoneItem)
+                }
+                results.values = filteredList
+                results.count = filteredList.size
+                //그 외의 경우(공백제외 2글자 초과) -> 이름/전화번호로 검색
+            } else {
+                for (phoneItem in list) {
+                    if (phoneItem.name?.contains(filterString) == true
+                        || phoneItem.phone?.contains(filterString) == true
+                    ) filteredList.add(phoneItem)
+                }
+                results.values = filteredList
+                results.count = filteredList.size
+            }
+            return results
+        }
+
+        override fun publishResults(charSequence: CharSequence?, filterResults: FilterResults?) {
+            filteredPhone.clear()
+            println(filterResults?.values)
+            filteredPhone.addAll(filterResults?.values as ArrayList<Phone>)
+            notifyDataSetChanged()
+        }
+
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item, parent, false)
+        return Holder(view)
+    }
+
+    override fun onBindViewHolder(holder: Holder, position: Int) {
+        val phone = filteredPhone[position]
+        holder.setPhone(phone)
+    }
+
+    override fun getItemCount(): Int {
+        return filteredPhone.size
+    }
+
+    override fun getFilter(): Filter {
+        return itemFilter
+    }
 }
