@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TabExample</string>
+    <string name="add_image">addImage</string>
 </resources>
