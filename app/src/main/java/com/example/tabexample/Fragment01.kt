@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tabexample.adapter.GalleryAdapter
 import com.example.tabexample.data.GalleryDatasource
 import com.example.tabexample.data.PhoneBookSource
+import com.example.tabexample.databinding.ContactItemBinding
 import com.example.tabexample.databinding.FragmentContactBinding
 import com.example.tabexample.model.Phone
 import org.json.JSONArray
@@ -34,11 +35,13 @@ class Fragment01 : Fragment() {
     private var _binding: FragmentContactBinding? = null
     private val binding get() = _binding!!
 
+    private var _binding2: ContactItemBinding? = null
+    private val binding2 get() = _binding2!!
+
     lateinit var mAdapter:PhoneAdapter
     var phoneList= mutableListOf<Phone>()
 
     lateinit var requestLauncher: ActivityResultLauncher<Intent>
-
 
     var searchViewTextListener: SearchView.OnQueryTextListener =
         object: SearchView.OnQueryTextListener{

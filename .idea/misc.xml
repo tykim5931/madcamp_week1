@@ -14,8 +14,9 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/drawable/ic_baseline_add_circle_24.xml" value="0.193" />
         <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/layout/activity_main.xml" value="0.18489583333333334" />
         <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/layout/contact_item.xml" value="0.4" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/layout/fragment_contact.xml" value="0.264" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/layout/fragment_contact.xml" value="0.4" />
         <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/layout/fragment_gallery.xml" value="0.18489583333333334" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/ThreeTabAndroid/app/src/main/res/layout/fragment_profile.xml" value="0.18489583333333334" />
       </map>
     </option>
   </component>
