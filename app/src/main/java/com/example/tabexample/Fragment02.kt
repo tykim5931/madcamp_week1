@@ -1,12 +1,8 @@
 package com.example.tabexample
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +10,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.beust.klaxon.Klaxon
-import com.beust.klaxon.KlaxonJson
 import com.example.tabexample.adapter.GalleryAdapter
 import com.example.tabexample.data.GalleryDatasource
 import com.example.tabexample.databinding.FragmentGalleryBinding
 import com.example.tabexample.model.GalleryImage
-import org.json.JSONArray
-import org.json.JSONObject
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
 
 class Fragment02 : Fragment() {
     private var _binding: FragmentGalleryBinding? = null
@@ -37,29 +32,41 @@ class Fragment02 : Fragment() {
         if (result.resultCode == Activity.RESULT_OK) {
             //  you will get result here in result.data
             val uri = result.data?.data!!
-            requireActivity().contentResolver.takePersistableUriPermission(
-                uri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
             // Do something else with the URI. E.g, save the URI as a string in the database
-            val json = JSONArray()
-            for (item in galleryDataset)
-            {
-                val jsonObject = JSONObject()
-                jsonObject.put("imageUriString", item.imageUriString)
-                json.put(jsonObject)
+            try {
+                val dir = File(requireContext().filesDir, "images")
+                if(!dir.exists()) {
+                    dir.mkdir()
+                }
+                lateinit var fileName: String
+                lateinit var file: File
+                do {
+                    fileName = uri.hashCode().toString() + getRandomString(10)
+                    file = File(dir,fileName)
+                }
+                while(file.exists())
+                val inputStream = requireContext().contentResolver.openInputStream(uri)!!
+                val bytes = inputStream.readBytes()
+                FileOutputStream(file).use {
+                    it.write(bytes)
+                    it.close()
+                }
+                inputStream.close()
+                galleryDataset = GalleryDatasource(requireContext()).loadGallery()
+                val recyclerView = binding.recyclerView
+                recyclerView.adapter = GalleryAdapter(requireContext(), galleryDataset)
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
             }
-            val fileName = "images.json"
-            val jsonObject = JSONObject()
-            jsonObject.put("imageUriString", uri.toString())
-            json.put(jsonObject)
-            requireContext().openFileOutput(fileName, Context.MODE_PRIVATE).use {
-                it.write(json.toString().toByteArray())
-            }
-            galleryDataset = GalleryDatasource(requireContext()).loadGallery()
-            val recyclerView = binding.recyclerView
-            recyclerView.adapter = GalleryAdapter(requireContext(), galleryDataset)
         }
+    }
+
+    private fun getRandomString(length: Int): String {
+        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return (1..length)
+            .map{ kotlin.random.Random.nextInt(0, charPool.size)}
+            .map(charPool::get)
+            .joinToString("")
     }
 
     override fun onCreateView(

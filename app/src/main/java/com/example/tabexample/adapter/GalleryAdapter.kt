@@ -29,7 +29,7 @@ class GalleryAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         val item = dataset[position]
-        holder.imageView.setImageURI(Uri.parse(item.imageUriString))
+        holder.imageView.setImageBitmap(item.bitmap)
     }
 
     override fun getItemCount() = dataset.size
