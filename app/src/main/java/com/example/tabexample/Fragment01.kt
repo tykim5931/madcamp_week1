@@ -21,6 +21,7 @@ import com.example.tabexample.data.GalleryDatasource
 import com.example.tabexample.data.PhoneBookSource
 import com.example.tabexample.databinding.ContactItemBinding
 import com.example.tabexample.databinding.FragmentContactBinding
+import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.Phone
 import org.json.JSONArray
 import org.json.JSONObject
@@ -34,9 +35,6 @@ class Fragment01 : Fragment() {
 
     private var _binding: FragmentContactBinding? = null
     private val binding get() = _binding!!
-
-    private var _binding2: ContactItemBinding? = null
-    private val binding2 get() = _binding2!!
 
     lateinit var mAdapter:PhoneAdapter
     var phoneList= mutableListOf<Phone>()
@@ -56,24 +54,22 @@ class Fragment01 : Fragment() {
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        println()
         _binding = FragmentContactBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        PhoneBookSource(requireContext()).savePhoneBook(phoneList)
-        _binding = null
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        PhoneBookSource(requireContext()).savePhoneBook(phoneList)
+//        _binding = null
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.searchView.setOnQueryTextListener(searchViewTextListener) //adapting filter to madapter!
 
         // get phone from json file
         phoneList = PhoneBookSource(requireContext()).loadPhoneBook() as MutableList<Phone>
-//        phoneList = getPhoneNumbers(searchText) as MutableList<Phone>
-
-        // set read phonelist to adapter
         mAdapter = PhoneAdapter(phoneList)
         binding.recycler.adapter = mAdapter
         binding.recycler.layoutManager = LinearLayoutManager(context)
@@ -104,15 +100,72 @@ class Fragment01 : Fragment() {
                 }
             }
             phoneList.sortBy { it.name }
+            PhoneBookSource(requireContext()).savePhoneBook(phoneList)
             mAdapter = PhoneAdapter(phoneList)
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
         }
 
+        // Contact plus button clicked
         binding.contactButton.setOnClickListener{
             val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
             requestLauncher.launch(intent)
         }
+        binding.contactButton.setOnLongClickListener{
+            mAdapter.updateCB(1)    // 체크박스 모두노출
+            binding.recycler.adapter = mAdapter
+            binding.recycler.layoutManager = LinearLayoutManager(context)
+
+            binding.contactButton.visibility = View.GONE // 추가버튼 안 보이게
+            binding.deleteButton.visibility = View.VISIBLE // 삭제버튼 보이게
+            binding.cancelButton.visibility = View.VISIBLE // 취소버튼 보이게
+            true
+        }
+
+        binding.cancelButton.setOnClickListener{
+            mAdapter.updateCB(0)    // 체크박스 모두해제
+            binding.recycler.adapter = mAdapter
+            binding.recycler.layoutManager = LinearLayoutManager(context)
+
+            binding.contactButton.visibility = View.VISIBLE // 추가버튼 보이게
+            binding.deleteButton.visibility = View.GONE // 삭제버튼 안보이게
+            binding.cancelButton.visibility = View.GONE // 취소버튼 안보이게
+        }
+
+        binding.deleteButton.setOnClickListener{
+            var checklist : List<CheckBoxData> = mAdapter.checkBoxList.filter{it.checked}
+            if(!checklist.isEmpty() && !phoneList.isEmpty()){
+                for (item in checklist){
+                    val idx : Int = phoneList.map{it.id}.indexOf(item.id)
+                    if(idx != -1) {
+                        phoneList.removeAt(idx) // 목록에서 삭제
+                    }
+                }
+            }
+
+            PhoneBookSource(requireContext()).savePhoneBook(phoneList)
+            mAdapter = PhoneAdapter(phoneList)
+            binding.recycler.adapter = mAdapter
+            binding.recycler.layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    fun resetViewSettings(phoneList: List<Phone>){
+        mAdapter = PhoneAdapter(phoneList)
+        binding.recycler.adapter = mAdapter
+        binding.recycler.layoutManager = LinearLayoutManager(context)
+
+//        mAdapter.setMyItemClickListener(object : PhoneAdapter.MyItemClickListener{
+//            override fun onItemClick(position:Int){
+//                phoneList[position].name
+//            }
+//            override fun onLongClick(position: Int) {
+//                // 체크박스 모두노출
+//                binding.contactButton.visibility = View.GONE // 추가버튼 안 보이게
+//                binding.deleteButton.visibility = View.VISIBLE // 삭제버튼 보이게
+//                binding.cancelButton.visibility = View.VISIBLE // 취소버튼 보이게
+//            }
+//        })
     }
 
 }

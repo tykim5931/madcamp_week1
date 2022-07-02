@@ -3,30 +3,43 @@ package com.example.tabexample
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
+import android.widget.*
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.Phone
-import org.w3c.dom.Text
 
 
 class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Holder>(), Filterable {
 
+    // ### 클릭 인터페이스
+    interface MyItemClickListener{
+        fun onItemClick(position: Int)
+        fun onLongClick(position: Int)
+    }
+
+    // ####
     var filteredPhone = ArrayList<Phone>()
     var itemFilter = ItemFilter()
+//    private lateinit var mItemClickListener: MyItemClickListener
+    private var ck = 0  // for setting checkbox visibility
 
     init{
         filteredPhone.addAll(list)
     }
+
+//    // ### 클릭 리스너 등록 메서드
+//    fun setMyItemClickListener(itemClickListener: MyItemClickListener){
+//        mItemClickListener = itemClickListener
+//    }
+    fun updateCB(n:Int){
+        ck = n
+    }
+    var checkBoxList = arrayListOf<CheckBoxData>()
 
     @SuppressLint("MissingPermission")
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,8 +47,9 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
         val btnPhone : AppCompatImageButton = itemView.findViewById(R.id.btnPhone)
         val textName : TextView = itemView.findViewById(R.id.textName)
         val textPhone : TextView = itemView.findViewById(R.id.textPhone)
-        val invisibleLayer : ConstraintLayout = itemView.findViewById(R.id.invisible_item)
-        val visibleLayer : ConstraintLayout = itemView.findViewById(R.id.visible_item)
+        val invisibleItem : ConstraintLayout = itemView.findViewById(R.id.invisible_item)
+        val visibleItem : ConstraintLayout = itemView.findViewById(R.id.visible_item)
+        var checkBox: CheckBox = itemView.findViewById(R.id.checkBox)
 
         init {
             this.btnPhone.setOnClickListener {
@@ -45,17 +59,38 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
                     itemView.context.startActivity(intent)
                 }
             }
-            this.visibleLayer.setOnClickListener {
-                if (invisibleLayer.visibility == View.GONE)
-                    invisibleLayer.visibility = View.VISIBLE
+            this.visibleItem.setOnClickListener {
+//                mItemClickListener.onItemClick(adapterPosition)
+                if(invisibleItem.visibility == View.GONE)
+                    invisibleItem.visibility = View.VISIBLE
                 else
-                    invisibleLayer.visibility = View.GONE
+                    invisibleItem.visibility = View.GONE
             }
+//            itemView.setOnLongClickListener{
+//                mItemClickListener.onLongClick(adapterPosition)
+//                checkBox.visibility = View.VISIBLE
+//                return@setOnLongClickListener true
+//            }
         }
-        fun setPhone(phone:Phone) {
+
+        fun setPhone(phone:Phone, pos: Int) { // binding method
             this.mPhone = phone
             this.textName.text = phone.name
             this.textPhone.text = phone.phone
+            if(ck == 1)
+                this.checkBox.visibility = View.VISIBLE
+            else
+                this.checkBox.visibility = View.GONE
+            if(pos >= checkBoxList.size)
+                checkBoxList.add(pos, CheckBoxData(phone.id, false))
+
+            checkBox.isChecked = checkBoxList[pos].checked
+            checkBox.setOnClickListener {
+                if(checkBox.isChecked)
+                    checkBoxList[pos].checked = true
+                else
+                    checkBoxList[pos].checked = false
+            }
         }
     }
 
@@ -95,23 +130,21 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
             filteredPhone.addAll(filterResults?.values as ArrayList<Phone>)
             notifyDataSetChanged()
         }
-
     }
+
+    // ### Necessary Implementation for Using Adapter
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.contact_item, parent, false)
         return Holder(view)
     }
-
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        val phone = filteredPhone[position]
-        holder.setPhone(phone)
+        holder.setPhone(filteredPhone[position], position)
     }
-
     override fun getItemCount(): Int {
         return filteredPhone.size
     }
-
     override fun getFilter(): Filter {
         return itemFilter
     }
+
 }
