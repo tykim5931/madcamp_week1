@@ -59,12 +59,6 @@ class Fragment01 : Fragment() {
         return binding.root
     }
 
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        PhoneBookSource(requireContext()).savePhoneBook(phoneList)
-//        _binding = null
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.searchView.setOnQueryTextListener(searchViewTextListener) //adapting filter to madapter!
 
@@ -126,7 +120,6 @@ class Fragment01 : Fragment() {
             mAdapter.updateCB(0)    // 체크박스 모두해제
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
-
             binding.contactButton.visibility = View.VISIBLE // 추가버튼 보이게
             binding.deleteButton.visibility = View.GONE // 삭제버튼 안보이게
             binding.cancelButton.visibility = View.GONE // 취소버튼 안보이게
@@ -141,12 +134,12 @@ class Fragment01 : Fragment() {
                         phoneList.removeAt(idx) // 목록에서 삭제
                     }
                 }
+                PhoneBookSource(requireContext()).savePhoneBook(phoneList)
+                mAdapter = PhoneAdapter(phoneList)
+                mAdapter.updateCB(1)    // 체크박스유지
+                binding.recycler.adapter = mAdapter
+                binding.recycler.layoutManager = LinearLayoutManager(context)
             }
-
-            PhoneBookSource(requireContext()).savePhoneBook(phoneList)
-            mAdapter = PhoneAdapter(phoneList)
-            binding.recycler.adapter = mAdapter
-            binding.recycler.layoutManager = LinearLayoutManager(context)
         }
     }
 
