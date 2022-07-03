@@ -17,8 +17,9 @@ class GalleryDatasource(private val context: Context) {
             }
             val fileList = dir.listFiles()
             fileList?.let {
-                val bitmapList = fileList.map{BitmapFactory.decodeStream(FileInputStream(it))}
-                return bitmapList.map{GalleryImage(it)}
+                val fileInfoList = fileList.map{Pair (it.name,
+                    BitmapFactory.decodeStream(FileInputStream(it)))}
+                return fileInfoList.map{GalleryImage(id=it.first, bitmap = it.second)}
             }
         } catch (e: FileNotFoundException) {
             e.printStackTrace()

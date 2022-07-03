@@ -25,17 +25,11 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
     // ####
     var filteredPhone = ArrayList<Phone>()
     var itemFilter = ItemFilter()
-//    private lateinit var mItemClickListener: MyItemClickListener
     private var ck = 0  // for setting checkbox visibility
 
     init{
         filteredPhone.addAll(list)
     }
-
-//    // ### 클릭 리스너 등록 메서드
-//    fun setMyItemClickListener(itemClickListener: MyItemClickListener){
-//        mItemClickListener = itemClickListener
-//    }
     fun updateCB(n:Int){
         ck = n
     }
