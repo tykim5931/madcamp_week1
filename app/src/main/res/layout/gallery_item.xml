@@ -15,9 +15,15 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:importantForAccessibility="no"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop">
+        </ImageView>
 
     </LinearLayout>
-
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
 
 </com.google.android.material.card.MaterialCardView>
