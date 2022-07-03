@@ -105,6 +105,7 @@ class Fragment01 : Fragment() {
             val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
             requestLauncher.launch(intent)
         }
+
         binding.contactButton.setOnLongClickListener{
             mAdapter.updateCB(1)    // 체크박스 모두노출
             binding.recycler.adapter = mAdapter

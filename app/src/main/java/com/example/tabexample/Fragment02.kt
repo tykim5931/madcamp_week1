@@ -60,7 +60,9 @@ class Fragment02 : Fragment() {
                     it.close()
                 }
                 inputStream.close()
-                this.resetView()
+                galleryDataset = GalleryDatasource(requireContext()).loadGallery()
+                val recyclerView = binding.recyclerView
+                recyclerView.adapter = GalleryAdapter(requireContext(), galleryDataset)
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             }
@@ -93,6 +95,7 @@ class Fragment02 : Fragment() {
         var mAdapter = GalleryAdapter(requireContext(), galleryDataset)
         recyclerView.adapter = mAdapter
         val fab = binding.fab
+
         fab.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).also {
                 it.addCategory(Intent.CATEGORY_OPENABLE)
@@ -102,7 +105,9 @@ class Fragment02 : Fragment() {
             }
             pickImage.launch(intent)
         }
+
         fab.setOnLongClickListener{
+            mAdapter = GalleryAdapter(requireContext(), galleryDataset) // update mAdapter
             mAdapter.updateCB(View.VISIBLE)    // 체크박스 모두노출
             recyclerView.adapter = mAdapter
             recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
@@ -114,6 +119,7 @@ class Fragment02 : Fragment() {
         }
 
         binding.cancelButton.setOnClickListener{
+            mAdapter = GalleryAdapter(requireContext(), galleryDataset) // update mAdapter
             mAdapter.checkBoxList.map{it.checked = false}//체크박스 모두해제
             mAdapter.updateCB(View.GONE)    // 체크박스 안보이게
             recyclerView.adapter = mAdapter
@@ -137,15 +143,13 @@ class Fragment02 : Fragment() {
                 }
                 recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
                 galleryDataset = GalleryDatasource(requireContext()).loadGallery()
-                recyclerView.adapter = GalleryAdapter(requireContext(), galleryDataset)
+                mAdapter = GalleryAdapter(requireContext(), galleryDataset) // update mAdapter
+                recyclerView.adapter = mAdapter // cast to recyclerView adapter
                 fab.visibility = View.VISIBLE // 추가버튼 보이게
                 binding.deleteButton.visibility = View.GONE // 삭제버튼 안보이게
                 binding.cancelButton.visibility = View.GONE // 취소버튼 안보이게
             }
         }
-    }
-
-    fun resetView(){
     }
 
     override fun onDestroyView() {
