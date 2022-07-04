@@ -9,7 +9,10 @@ import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.V
 import android.provider.ContactsContract
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
@@ -33,6 +36,12 @@ import kotlin.reflect.typeOf
 /* contact Fragment */
 class Fragment01 : Fragment() {
 
+    companion object {
+        const val SHRUNKEN_MENU = 1
+        const val EXPANDED_MENU = 2
+        const val DELETE_MENU = 3
+
+    }
     private var _binding: FragmentContactBinding? = null
     private val binding get() = _binding!!
 
@@ -53,6 +62,14 @@ class Fragment01 : Fragment() {
             }
         }
 
+    // Animation variables & switch
+    private val rotateOpen: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim)}
+    private val rotateClose: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_close_anim)}
+    private val fromBottom: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.from_bottom_anim)}
+    private val toBottom: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.to_bottom_anim)}
+
+    private var menuStatus: Int = SHRUNKEN_MENU
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         println()
         _binding = FragmentContactBinding.inflate(inflater, container, false)
@@ -67,7 +84,10 @@ class Fragment01 : Fragment() {
         mAdapter = PhoneAdapter(phoneList)
         binding.recycler.adapter = mAdapter
         binding.recycler.layoutManager = LinearLayoutManager(context)
-
+        menuStatus = SHRUNKEN_MENU
+        setVisibility(menuStatus)
+        setAnimation(menuStatus)
+        setClickable(menuStatus)
         // 주소록 열어서 연락처 읽어오기
         requestLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if (it.resultCode == RESULT_OK){
@@ -92,6 +112,7 @@ class Fragment01 : Fragment() {
                         phoneList.add(phone) // 결과목록에 추가
                     }
                 }
+                cursor.close()
             }
             phoneList.sortBy { it.name }
             PhoneBookSource(requireContext()).savePhoneBook(phoneList)
@@ -99,35 +120,48 @@ class Fragment01 : Fragment() {
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
         }
+        //On-click listeners
+        binding.moreButton.setOnClickListener{
+            menuStatus = EXPANDED_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
+        }
 
-        // Contact plus button clicked
-        binding.contactButton.setOnClickListener{
+        binding.closeButton.setOnClickListener{
+            menuStatus = SHRUNKEN_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
+        }
+        // Contact plus button
+        binding.addButton.setOnClickListener{
             val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
             requestLauncher.launch(intent)
         }
 
-        binding.contactButton.setOnLongClickListener{
+        binding.selectButton.setOnClickListener{
             mAdapter.updateCB(1)    // 체크박스 모두노출
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
-
-            binding.contactButton.visibility = View.GONE // 추가버튼 안 보이게
-            binding.deleteButton.visibility = View.VISIBLE // 삭제버튼 보이게
-            binding.cancelButton.visibility = View.VISIBLE // 취소버튼 보이게
-            true
+            menuStatus = DELETE_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
         }
 
         binding.cancelButton.setOnClickListener{
             mAdapter.updateCB(0)    // 체크박스 모두해제
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
-            binding.contactButton.visibility = View.VISIBLE // 추가버튼 보이게
-            binding.deleteButton.visibility = View.GONE // 삭제버튼 안보이게
-            binding.cancelButton.visibility = View.GONE // 취소버튼 안보이게
+            menuStatus = EXPANDED_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
         }
 
         binding.deleteButton.setOnClickListener{
-            var checklist : List<CheckBoxData> = mAdapter.checkBoxList.filter{it.checked}
+            val checklist : List<CheckBoxData> = mAdapter.checkBoxList.filter{it.checked}
             if(!checklist.isEmpty() && !phoneList.isEmpty()){
                 for (item in checklist){
                     val idx : Int = phoneList.map{it.id}.indexOf(item.id)
@@ -140,9 +174,81 @@ class Fragment01 : Fragment() {
                 mAdapter.updateCB(1)    // 체크박스유지
                 binding.recycler.adapter = mAdapter
                 binding.recycler.layoutManager = LinearLayoutManager(context)
+                menuStatus = EXPANDED_MENU
+                setVisibility(menuStatus)
+                setAnimation(menuStatus)
+                setClickable(menuStatus)
+            }
+        }
+
+
+    }
+
+    private fun setVisibility(menuStatus: Int) {
+        val allSet = setOf(binding.moreButton, binding.selectButton, binding.addButton, binding.closeButton, binding.deleteButton, binding.cancelButton)
+        when(menuStatus) {
+            SHRUNKEN_MENU -> {
+                val visibleSet = setOf(binding.moreButton)
+                visibleSet.forEach{it.visibility = View.VISIBLE}
+                allSet.minus(visibleSet).forEach{it.visibility = View.INVISIBLE}
+            }
+            EXPANDED_MENU -> {
+                val visibleSet = setOf(binding.selectButton, binding.addButton, binding.closeButton)
+                visibleSet.forEach{it.visibility = View.VISIBLE}
+                allSet.minus(visibleSet).forEach{it.visibility = View.INVISIBLE}
+            }
+            //DELETE_MENU
+            else -> {
+                val visibleSet = setOf(binding.deleteButton, binding.cancelButton)
+                visibleSet.forEach{it.visibility = View.VISIBLE}
+                allSet.minus(visibleSet).forEach{it.visibility = View.INVISIBLE}
             }
         }
     }
+    private fun setAnimation(menuStatus: Int) {
+        when(menuStatus) {
+            SHRUNKEN_MENU -> {
+                listOf(binding.moreButton)
+                    .forEach{it.startAnimation(rotateClose)}
+                listOf(binding.selectButton, binding.addButton)
+                    .forEach{it.startAnimation(toBottom)}
+            }
+            EXPANDED_MENU -> {
+                listOf(binding.moreButton)
+                    .forEach{it.startAnimation(rotateOpen)}
+                listOf(binding.selectButton, binding.addButton)
+                    .forEach{it.startAnimation(fromBottom)}
+            }
+            //DELETE_MENU
+            else -> {
+                listOf(binding.selectButton, binding.addButton)
+                    .forEach{it.startAnimation(toBottom)}
+            }
+        }
+    }
+
+    private fun setClickable(menuStatus: Int) {
+        val allSet = setOf(binding.moreButton, binding.selectButton, binding.addButton, binding.closeButton, binding.deleteButton, binding.cancelButton)
+        when(menuStatus) {
+            SHRUNKEN_MENU -> {
+                val clickableSet = setOf(binding.moreButton)
+                clickableSet.forEach{it.isClickable = true}
+                allSet.minus(clickableSet).forEach{it.isClickable = false}
+            }
+            EXPANDED_MENU -> {
+                val clickableSet = setOf(binding.selectButton, binding.addButton, binding.closeButton)
+                clickableSet.forEach{it.isClickable = true}
+                allSet.minus(clickableSet).forEach{it.isClickable = false}
+            }
+            //DELETE_MENU
+            else -> {
+                val clickableSet = setOf(binding.deleteButton, binding.cancelButton)
+                clickableSet.forEach{it.isClickable = true}
+                allSet.minus(clickableSet).forEach{it.isClickable = false}
+            }
+        }
+    }
+
 
     fun resetViewSettings(phoneList: List<Phone>){
         mAdapter = PhoneAdapter(phoneList)
@@ -155,7 +261,7 @@ class Fragment01 : Fragment() {
 //            }
 //            override fun onLongClick(position: Int) {
 //                // 체크박스 모두노출
-//                binding.contactButton.visibility = View.GONE // 추가버튼 안 보이게
+//                binding.addButton.visibility = View.GONE // 추가버튼 안 보이게
 //                binding.deleteButton.visibility = View.VISIBLE // 삭제버튼 보이게
 //                binding.cancelButton.visibility = View.VISIBLE // 취소버튼 보이게
 //            }

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">TabExample</string>
     <string name="add_image">addImage</string>
+    <string name="more_button">MoreButton</string>
+    <string name="add_button">AddButton</string>
+    <string name="close_button">CloseButton</string>
+    <string name="select_button">SelectButton</string>
+    <string name="delete_button">DeleteButton</string>
+    <string name="contacts_top_bar">Contacts</string>
 </resources>
