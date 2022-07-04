@@ -43,11 +43,12 @@ class ToDoSource(private val context: Context) {
         return todolist
     }
 
-    fun saveTodoList(todoList:MutableList<ToDoItem>){
+    fun saveTodoList(todoList:List<ToDoItem>){
         val json = JSONArray()
         for (item in todoList)
         {
             val jsonObject = JSONObject()
+            jsonObject.put("id", item.id)
             jsonObject.put("date", item.date)
             jsonObject.put("contents", item.contents)
             jsonObject.put("done", item.done)
