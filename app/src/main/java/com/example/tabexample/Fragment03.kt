@@ -27,8 +27,6 @@ import com.example.tabexample.databinding.FragmentTodoBinding
 import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.Phone
 import com.example.tabexample.model.ToDoItem
-import com.shrikanthravi.collapsiblecalendarview.data.Day
-import com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
 import java.io.File
 import java.text.SimpleDateFormat
 

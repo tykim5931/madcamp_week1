@@ -30,7 +30,8 @@
             app:layout_constraintStart_toEndOf="@+id/checkBox"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.6"
-            app:srcCompat="@drawable/ic_baseline_radio_button_unchecked_24" />
+            app:srcCompat="@drawable/ic_baseline_clear_24"
+            />
 
         <TextView
             android:id="@+id/text"
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/itemLayer">
 
@@ -59,18 +61,19 @@
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone">
+            tools:visibility="visible">
 
             <RadioButton
                 android:id="@+id/inProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/ic_baseline_radio_button_unchecked_24" />
+                android:button="@drawable/ic_baseline_clear_24" />
 
             <RadioButton
                 android:id="@+id/done"
@@ -82,7 +85,7 @@
                 android:id="@+id/postpone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/ic_baseline_arrow_forward_24" />
+                android:button="@drawable/ic_baseline_change_history_24" />
         </RadioGroup>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
