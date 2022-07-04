@@ -151,7 +151,8 @@ class Fragment01 : Fragment() {
         }
 
         binding.cancelButton.setOnClickListener{
-            mAdapter.updateCB(0)    // 체크박스 모두해제
+            mAdapter.checkBoxList.map{it.checked = false}//체크박스 모두해제
+            mAdapter.updateCB(0)    // 체크박스 숨기기
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
             menuStatus = EXPANDED_MENU
@@ -248,25 +249,6 @@ class Fragment01 : Fragment() {
                 allSet.minus(clickableSet).forEach{it.isClickable = false}
             }
         }
-    }
-
-
-    fun resetViewSettings(phoneList: List<Phone>){
-        mAdapter = PhoneAdapter(phoneList)
-        binding.recycler.adapter = mAdapter
-        binding.recycler.layoutManager = LinearLayoutManager(context)
-
-//        mAdapter.setMyItemClickListener(object : PhoneAdapter.MyItemClickListener{
-//            override fun onItemClick(position:Int){
-//                phoneList[position].name
-//            }
-//            override fun onLongClick(position: Int) {
-//                // 체크박스 모두노출
-//                binding.addButton.visibility = View.GONE // 추가버튼 안 보이게
-//                binding.deleteButton.visibility = View.VISIBLE // 삭제버튼 보이게
-//                binding.cancelButton.visibility = View.VISIBLE // 취소버튼 보이게
-//            }
-//        })
     }
 
 }

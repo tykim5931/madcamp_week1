@@ -9,6 +9,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabexample.R
+import com.example.tabexample.data.ToDoSource
+import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.ToDoItem
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,12 +20,36 @@ import kotlin.collections.ArrayList
 class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.Holder>(),
     Filterable {
 
+    private var ck = View.GONE  // for setting checkbox visibility
+    fun updateCB(n:Int){ck = n}
+    var checkBoxList = arrayListOf<CheckBoxData>()
+
     var filteredList = ArrayList<ToDoItem>()
+    val unfilteredList = ArrayList<ToDoItem>()
     var itemFilter = ItemFilter()
     private lateinit var context:Context
-    init{ filteredList.addAll(list) }
+    init{
+        unfilteredList.addAll(list)
+        filteredList.addAll(list)
+    }
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // for Checkbox
+        var checkBox: CheckBox = itemView.findViewById(R.id.checkBox)
+
+        fun cbSetter(pos: Int, id:String){
+            this.checkBox.visibility = ck
+            if(pos >= checkBoxList.size)
+                checkBoxList.add(pos, CheckBoxData(id,false))
+            checkBox.isChecked = checkBoxList[pos].checked
+            checkBox.setOnClickListener {
+                if(checkBox.isChecked)
+                    checkBoxList[pos].checked = true
+                else
+                    checkBoxList[pos].checked = false
+            }
+        }
+
         lateinit var mItem: ToDoItem
         var textView: TextView = itemView.findViewById(R.id.text)
         var progressBtn: ImageButton = itemView.findViewById(R.id.btn_progress)
@@ -39,33 +65,34 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
             }
             radioGroup.setOnCheckedChangeListener{ _, isChecked ->
                 var radioButton: RadioButton = itemView.findViewById(isChecked)
-                val pos = filteredList.map{it.id}.indexOf(mItem.id)
+                val pos = unfilteredList.map{it.id}.indexOf(mItem.id)
                 when(isChecked){
                     R.id.done -> {
-                        filteredList[pos].done = true
+                        unfilteredList[pos].done = true
                         progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
                     }
                     R.id.inProgress -> {
-                        filteredList[pos].done = false
+                        unfilteredList[pos].done = false
                         progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                     R.id.postpone -> {
                         val dateFormat: SimpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-                        var calDate = dateFormat.parse(filteredList[pos].date)
+                        var calDate = dateFormat.parse(unfilteredList[pos].date)
                         val c: Calendar = Calendar.getInstance()
                         c.setTime(calDate)
                         c.add(Calendar.DATE, 1)
-                        filteredList[pos].date = dateFormat.format(c.getTime())
-                        println(filteredList[pos].date)
-                        filteredList[pos].done = false
+                        unfilteredList[pos].date = dateFormat.format(c.getTime())
+                        println(unfilteredList[pos].date)
+                        unfilteredList[pos].done = false
                         progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                 }
                 radioButton.isChecked = false
                 radioGroup.visibility = View.GONE
+                ToDoSource(context).saveTodoList(unfilteredList)
             }
         }
 
@@ -86,17 +113,18 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
     inner class ItemFilter: Filter() {
         override fun performFiltering(charSequence: CharSequence?): FilterResults {
 
-            val filterString = charSequence.toString()  // here we get date of calender
+            val dateFormat = SimpleDateFormat("yyyy/MM/dd")
+            val filterString = charSequence.toString()
             val results = FilterResults()
-            println("charSequence: $charSequence")
 
-            val filteredList: ArrayList<ToDoItem> = ArrayList<ToDoItem>()
-            for (item in list){
-                if(item.date == filterString) filteredList.add(item)
+            val resultList: ArrayList<ToDoItem> = ArrayList<ToDoItem>()
+            for (item in unfilteredList){
+                if(dateFormat.parse(item.date) == dateFormat.parse(filterString))
+                    resultList.add(item)
             }
-
-            results.values = filteredList
-            results.count = filteredList.size
+            results.values = resultList
+            results.count = resultList.size
+            println(resultList.size)
             return results
         }
 
@@ -104,11 +132,14 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
             filteredList.clear()
             filteredList.addAll(filterResults?.values as ArrayList<ToDoItem>)
             notifyDataSetChanged()
+            println(filteredList.size)
         }
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
+        val item = filteredList[position]
         holder.setItem(filteredList[position], position)
+        holder.cbSetter(position, item.id)
     }
 
     override fun getItemCount(): Int {

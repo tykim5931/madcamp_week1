@@ -43,7 +43,7 @@ class ToDoSource(private val context: Context) {
         return todolist
     }
 
-    fun saveTodoList(todoList:MutableList<ToDoItem>){
+    fun saveTodoList(todoList:List<ToDoItem>){
         val json = JSONArray()
         for (item in todoList)
         {

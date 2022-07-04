@@ -48,4 +48,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.beust:klaxon:5.5'
     implementation 'com.github.shrikanth7698:Collapsible-Calendar-View-Android:v1.0.3'
+    implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
 }

@@ -42,6 +42,7 @@ class TodoActivity : AppCompatActivity() {
                 val nowdate: Date = Date(now)
                 val dateFormat: SimpleDateFormat = SimpleDateFormat("yyMMddhhmmss")
                 intent.putExtra("id", dateFormat.format(nowdate))
+                println( dateFormat.format(nowdate))
                 intent.putExtra("contents", contents)
                 setResult(RESULT_OK, intent)
                 finish()
