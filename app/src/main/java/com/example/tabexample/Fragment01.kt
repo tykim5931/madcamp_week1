@@ -102,13 +102,12 @@ class Fragment01 : Fragment() {
                 )
                 println("Cursor size: ${cursor?.count}")
                 if (cursor!!.moveToFirst()){
-                    // 만약에 아이디가 다르면 새로 추가
                     val id = cursor.getString(0)
                     val name = cursor.getString(1)
                     val number = cursor.getString(2)
                     // add to phoneList
                     val phone = Phone(id, name, number) // 개별 전화번호 데이터
-                    if(id !in phoneList.map{it.id}){
+                    if(id !in phoneList.map{it.id}){    // 만약에 아이디가 다르면 새로 추가
                         phoneList.add(phone) // 결과목록에 추가
                     }
                 }
@@ -120,6 +119,7 @@ class Fragment01 : Fragment() {
             binding.recycler.adapter = mAdapter
             binding.recycler.layoutManager = LinearLayoutManager(context)
         }
+
         //On-click listeners
         binding.moreButton.setOnClickListener{
             menuStatus = EXPANDED_MENU

@@ -10,6 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tabexample.R
 import com.example.tabexample.model.ToDoItem
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.Holder>(),
@@ -35,22 +38,33 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
                     radioGroup.visibility = View.GONE
             }
             radioGroup.setOnCheckedChangeListener{ _, isChecked ->
+                var radioButton: RadioButton = itemView.findViewById(isChecked)
+                val pos = filteredList.map{it.id}.indexOf(mItem.id)
                 when(isChecked){
                     R.id.done -> {
-                        mItem.done = true
+                        filteredList[pos].done = true
                         progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
                     }
                     R.id.inProgress -> {
-                        mItem.done = false
+                        filteredList[pos].done = false
                         progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                     R.id.postpone -> {
-                        mItem.date = mItem.date + 1
-                        println(mItem.date)
+                        val dateFormat: SimpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
+                        var calDate = dateFormat.parse(filteredList[pos].date)
+                        val c: Calendar = Calendar.getInstance()
+                        c.setTime(calDate)
+                        c.add(Calendar.DATE, 1)
+                        filteredList[pos].date = dateFormat.format(c.getTime())
+                        println(filteredList[pos].date)
+                        filteredList[pos].done = false
+                        progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                        textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                 }
+                radioButton.isChecked = false
                 radioGroup.visibility = View.GONE
             }
         }

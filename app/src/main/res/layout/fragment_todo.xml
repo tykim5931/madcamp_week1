@@ -49,14 +49,14 @@
         app:srcCompat="@android:drawable/ic_input_add"
         app:tint="@color/white" />
 
-    <com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar
+    <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/top_bar">
-    </com.shrikanthravi.collapsiblecalendarview.widget.CollapsibleCalendar>
+    </CalendarView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_todo"
