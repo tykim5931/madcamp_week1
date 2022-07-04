@@ -171,12 +171,13 @@ class Fragment01 : Fragment() {
                 }
                 PhoneBookSource(requireContext()).savePhoneBook(phoneList)
                 mAdapter = PhoneAdapter(phoneList)
-                mAdapter.updateCB(1)    // 체크박스유지
+                mAdapter.updateCB(0)    // 체크박스유지
                 binding.recycler.adapter = mAdapter
                 binding.recycler.layoutManager = LinearLayoutManager(context)
-                menuStatus = EXPANDED_MENU
+                menuStatus = SHRUNKEN_MENU
                 setVisibility(menuStatus)
-                setAnimation(menuStatus)
+                listOf(binding.moreButton)
+                    .forEach{it.startAnimation(rotateClose)}
                 setClickable(menuStatus)
             }
         }
