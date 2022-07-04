@@ -3,9 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/fragment_contact.xml" value="0.18489583333333334" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/activity_main.xml" value="0.24947916666666667" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/activity_todo.xml" value="0.2" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/fragment_contact.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/fragment_gallery.xml" value="0.18489583333333334" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/fragment_todo.xml" value="0.2" />
         <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/gallery_item.xml" value="0.18489583333333334" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/NewThreeTab/app/src/main/res/layout/todo_item.xml" value="0.536" />
         <entry key="..\:/Users/User/AndroidStudioProjects/TabExample/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/User/AndroidStudioProjects/TabExample/app/src/main/res/layout/contact_item.xml" value="0.264" />
         <entry key="..\:/Users/User/AndroidStudioProjects/TabExample/app/src/main/res/layout/fragment_contact.xml" value="0.1" />
