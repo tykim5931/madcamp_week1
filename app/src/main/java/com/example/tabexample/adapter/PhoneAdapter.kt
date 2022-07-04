@@ -39,11 +39,14 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mPhone: Phone? = null
         val btnPhone : AppCompatImageButton = itemView.findViewById(R.id.btnPhone)
+        val btnMessage: AppCompatImageButton = itemView.findViewById(R.id.btnMessage)
         val textName : TextView = itemView.findViewById(R.id.textName)
         val textPhone : TextView = itemView.findViewById(R.id.textPhone)
         val invisibleItem : ConstraintLayout = itemView.findViewById(R.id.invisible_item)
         val visibleItem : ConstraintLayout = itemView.findViewById(R.id.visible_item)
         var checkBox: CheckBox = itemView.findViewById(R.id.checkBox)
+        var ll1: LinearLayout = itemView.findViewById(R.id.linearLayout1)
+        var ll2: LinearLayout = itemView.findViewById(R.id.linearLayout2)
 
         init {
             this.btnPhone.setOnClickListener {
@@ -53,12 +56,26 @@ class PhoneAdapter(val list: List<Phone>) : RecyclerView.Adapter<PhoneAdapter.Ho
                     itemView.context.startActivity(intent)
                 }
             }
+
+            this.btnMessage.setOnClickListener {
+                mPhone?.phone.let { phoneNumber ->
+                    val uri = Uri.parse("sms:${phoneNumber.toString()}")
+                    val intent = Intent(Intent.ACTION_SENDTO, uri)
+                    itemView.context.startActivity(intent)
+                }
+            }
+
             this.visibleItem.setOnClickListener {
 //                mItemClickListener.onItemClick(adapterPosition)
-                if(invisibleItem.visibility == View.GONE)
-                    invisibleItem.visibility = View.VISIBLE
-                else
-                    invisibleItem.visibility = View.GONE
+                if(ll1.visibility == View.GONE) {
+                    ll1.visibility = View.VISIBLE
+                    ll2.visibility = View.VISIBLE
+                }
+                else {
+                    ll1.visibility = View.GONE
+                    ll2.visibility = View.GONE
+                }
+
             }
 //            itemView.setOnLongClickListener{
 //                mItemClickListener.onLongClick(adapterPosition)

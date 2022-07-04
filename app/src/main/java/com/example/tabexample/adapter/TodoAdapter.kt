@@ -39,7 +39,7 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
                     R.id.done -> {
                         mItem.done = true
                         progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
-                        textView.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                        textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
                     }
                     R.id.inProgress -> {
                         mItem.done = false
@@ -60,7 +60,7 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
             this.textView.text = todo.contents
             if(todo.done == true){
                 progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
-                textView.setTextColor(ContextCompat.getColor(context, R.color.grey))
+                textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
             }
             else{
                 progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)

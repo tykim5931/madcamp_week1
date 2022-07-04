@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -30,6 +32,14 @@ class Fragment02 : Fragment() {
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
     private lateinit var galleryDataset: List<GalleryImage>
+
+    // Animation variables & switch
+    private val rotateOpen: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim)}
+    private val rotateClose: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_close_anim)}
+    private val fromBottom: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.from_bottom_anim)}
+    private val toBottom: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.to_bottom_anim)}
+
+    private var menuStatus: Int = Fragment01.SHRUNKEN_MENU
 
     companion object{
         const val REQUEST_IMAGE_GET = 1
@@ -94,9 +104,25 @@ class Fragment02 : Fragment() {
 
         var mAdapter = GalleryAdapter(requireContext(), galleryDataset)
         recyclerView.adapter = mAdapter
-        val fab = binding.fab
+        menuStatus = Fragment01.SHRUNKEN_MENU
+        setVisibility(menuStatus)
+        setAnimation(menuStatus)
+        setClickable(menuStatus)
+        //On-click listeners
+        binding.moreButton.setOnClickListener{
+            menuStatus = Fragment01.EXPANDED_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
+        }
+        binding.closeButton.setOnClickListener{
+            menuStatus = Fragment01.SHRUNKEN_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
+        }
 
-        fab.setOnClickListener {
+        binding.addButton.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).also {
                 it.addCategory(Intent.CATEGORY_OPENABLE)
                 it.type = "image/*"
@@ -106,16 +132,16 @@ class Fragment02 : Fragment() {
             pickImage.launch(intent)
         }
 
-        fab.setOnLongClickListener{
+        binding.selectButton.setOnClickListener{
             mAdapter = GalleryAdapter(requireContext(), galleryDataset) // update mAdapter
             mAdapter.updateCB(View.VISIBLE)    // 체크박스 모두노출
             recyclerView.adapter = mAdapter
             recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
-            fab.visibility = View.GONE // 추가버튼 안 보이게
-            binding.deleteButton.visibility = View.VISIBLE // 삭제버튼 보이게
-            binding.cancelButton.visibility = View.VISIBLE // 취소버튼 보이게
-            true
+            menuStatus = Fragment01.DELETE_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
         }
 
         binding.cancelButton.setOnClickListener{
@@ -124,9 +150,10 @@ class Fragment02 : Fragment() {
             mAdapter.updateCB(View.GONE)    // 체크박스 안보이게
             recyclerView.adapter = mAdapter
             recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
-            fab.visibility = View.VISIBLE // 추가버튼 보이게
-            binding.deleteButton.visibility = View.GONE // 삭제버튼 안보이게
-            binding.cancelButton.visibility = View.GONE // 취소버튼 안보이게
+            menuStatus = Fragment01.EXPANDED_MENU
+            setVisibility(menuStatus)
+            setAnimation(menuStatus)
+            setClickable(menuStatus)
         }
 
         binding.deleteButton.setOnClickListener{
@@ -136,7 +163,7 @@ class Fragment02 : Fragment() {
                     val dir = File(requireContext().filesDir, "images")
                     val idx : Int = galleryDataset.map{it.id}.indexOf(item.id)
                     if(idx != -1) {
-                        val file = File(dir,item.id)
+                        val file = File(dir!!,item.id)
                         val deleted = file.delete()
                         println("deleted: "+deleted+ " name: "+ item.id)
                     }
@@ -145,9 +172,76 @@ class Fragment02 : Fragment() {
                 galleryDataset = GalleryDatasource(requireContext()).loadGallery()
                 mAdapter = GalleryAdapter(requireContext(), galleryDataset) // update mAdapter
                 recyclerView.adapter = mAdapter // cast to recyclerView adapter
-                fab.visibility = View.VISIBLE // 추가버튼 보이게
-                binding.deleteButton.visibility = View.GONE // 삭제버튼 안보이게
-                binding.cancelButton.visibility = View.GONE // 취소버튼 안보이게
+                menuStatus = Fragment01.SHRUNKEN_MENU
+                setVisibility(menuStatus)
+                listOf(binding.moreButton)
+                    .forEach{it.startAnimation(rotateClose)}
+                setClickable(menuStatus)
+            }
+        }
+    }
+
+    private fun setVisibility(menuStatus: Int) {
+        val allSet = setOf(binding.moreButton, binding.selectButton, binding.addButton, binding.closeButton, binding.deleteButton, binding.cancelButton)
+        when(menuStatus) {
+            Fragment01.SHRUNKEN_MENU -> {
+                val visibleSet = setOf(binding.moreButton)
+                visibleSet.forEach{it.visibility = View.VISIBLE}
+                allSet.minus(visibleSet).forEach{it.visibility = View.INVISIBLE}
+            }
+            Fragment01.EXPANDED_MENU -> {
+                val visibleSet = setOf(binding.selectButton, binding.addButton, binding.closeButton)
+                visibleSet.forEach{it.visibility = View.VISIBLE}
+                allSet.minus(visibleSet).forEach{it.visibility = View.INVISIBLE}
+            }
+            //DELETE_MENU
+            else -> {
+                val visibleSet = setOf(binding.deleteButton, binding.cancelButton)
+                visibleSet.forEach{it.visibility = View.VISIBLE}
+                allSet.minus(visibleSet).forEach{it.visibility = View.INVISIBLE}
+            }
+        }
+    }
+    private fun setAnimation(menuStatus: Int) {
+        when(menuStatus) {
+            Fragment01.SHRUNKEN_MENU -> {
+                listOf(binding.moreButton)
+                    .forEach{it.startAnimation(rotateClose)}
+                listOf(binding.selectButton, binding.addButton)
+                    .forEach{it.startAnimation(toBottom)}
+            }
+            Fragment01.EXPANDED_MENU -> {
+                listOf(binding.moreButton)
+                    .forEach{it.startAnimation(rotateOpen)}
+                listOf(binding.selectButton, binding.addButton)
+                    .forEach{it.startAnimation(fromBottom)}
+            }
+            //DELETE_MENU
+            else -> {
+                listOf(binding.selectButton, binding.addButton)
+                    .forEach{it.startAnimation(toBottom)}
+            }
+        }
+    }
+
+    private fun setClickable(menuStatus: Int) {
+        val allSet = setOf(binding.moreButton, binding.selectButton, binding.addButton, binding.closeButton, binding.deleteButton, binding.cancelButton)
+        when(menuStatus) {
+            Fragment01.SHRUNKEN_MENU -> {
+                val clickableSet = setOf(binding.moreButton)
+                clickableSet.forEach{it.isClickable = true}
+                allSet.minus(clickableSet).forEach{it.isClickable = false}
+            }
+            Fragment01.EXPANDED_MENU -> {
+                val clickableSet = setOf(binding.selectButton, binding.addButton, binding.closeButton)
+                clickableSet.forEach{it.isClickable = true}
+                allSet.minus(clickableSet).forEach{it.isClickable = false}
+            }
+            //DELETE_MENU
+            else -> {
+                val clickableSet = setOf(binding.deleteButton, binding.cancelButton)
+                clickableSet.forEach{it.isClickable = true}
+                allSet.minus(clickableSet).forEach{it.isClickable = false}
             }
         }
     }
