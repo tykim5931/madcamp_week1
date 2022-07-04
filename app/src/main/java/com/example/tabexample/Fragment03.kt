@@ -86,7 +86,7 @@ class Fragment03 : Fragment() {
             if (it.resultCode == Activity.RESULT_OK) {
                 val id = it.data?.getStringExtra("id") ?: ""
                 val contents = it.data?.getStringExtra("contents") ?: ""
-                val todoItem = ToDoItem(id, calDate, false, contents)
+                val todoItem = ToDoItem(id, calDate, 0, contents)
                 if(id !in todoList.map{it.id}){    // 만약 중복되지 않는 todo이면
                     todoList.add(todoItem) // 결과목록에 추가
                 }

@@ -68,25 +68,18 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
                 val pos = unfilteredList.map{it.id}.indexOf(mItem.id)
                 when(isChecked){
                     R.id.done -> {
-                        unfilteredList[pos].done = true
+                        unfilteredList[pos].done = 1
                         progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
                     }
                     R.id.inProgress -> {
-                        unfilteredList[pos].done = false
-                        progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                        unfilteredList[pos].done = 0
+                        progressBtn.setImageResource(R.drawable.ic_baseline_clear_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                     R.id.postpone -> {
-                        val dateFormat: SimpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-                        var calDate = dateFormat.parse(unfilteredList[pos].date)
-                        val c: Calendar = Calendar.getInstance()
-                        c.setTime(calDate)
-                        c.add(Calendar.DATE, 1)
-                        unfilteredList[pos].date = dateFormat.format(c.getTime())
-                        println(unfilteredList[pos].date)
-                        unfilteredList[pos].done = false
-                        progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                        unfilteredList[pos].done = 2
+                        progressBtn.setImageResource(R.drawable.ic_baseline_change_history_24)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                 }
@@ -99,12 +92,16 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
         fun setItem(todo:ToDoItem, pos: Int) { // binding method
             this.mItem = todo
             this.textView.text = todo.contents
-            if(todo.done == true){
+            if(todo.done == 1){
                 progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
                 textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
             }
+            else if(todo.done == 0){
+                progressBtn.setImageResource(R.drawable.ic_baseline_clear_24)
+                textView.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
             else{
-                progressBtn.setImageResource(R.drawable.ic_baseline_radio_button_unchecked_24)
+                progressBtn.setImageResource(R.drawable.ic_baseline_change_history_24)
                 textView.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
         }
