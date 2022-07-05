@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         //### TabLayout과 ViewPager2 연결
         // Tab 메뉴명 설정
-        val tabTitles = listOf<String>("연락처", "갤러리", "프로필")
+        val tabTitles = listOf<String>("연락처", "갤러리", "할일")
         // 연결 및 설정된 메뉴면 입히기
         TabLayoutMediator(tabLayout, viewPager, {tab, position -> tab.text = tabTitles[position]}).attach()
     }
