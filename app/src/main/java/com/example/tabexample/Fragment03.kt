@@ -28,6 +28,7 @@ import com.example.tabexample.data.ToDoSource
 import com.example.tabexample.databinding.FragmentContactBinding
 import com.example.tabexample.databinding.FragmentTodoBinding
 import com.example.tabexample.decorator.DotDecorator
+import com.example.tabexample.decorator.TodayDecorator
 import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.Phone
 import com.example.tabexample.model.ToDoItem
@@ -94,6 +95,7 @@ class Fragment03 : Fragment() {
         grayDotDecorator = generateGrayDotDecorator()
         calendarView.addDecorator(salmonDotDecorator)
         calendarView.addDecorator(grayDotDecorator)
+        calendarView.addDecorator(TodayDecorator()) // Set today color
 //        calendarView.setDateTextAppearance(R.style.CustomDateTextAppearance)
 //        calendarView.setWeekDayTextAppearance(R.style.CustomWeekDayAppearance)
 //        calendarView.setHeaderTextAppearance(R.style.CustomHeaderTextAppearance)
@@ -210,6 +212,17 @@ class Fragment03 : Fragment() {
                 binding.recyclerTodo.adapter = mAdapter
             }
         }
+
+        binding.expandButton.setOnClickListener{
+            if(calendarView.calendarMode == CalendarMode.MONTHS) {
+                calendarView.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit()
+                binding.expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24)
+            }
+            else{
+                calendarView.state().edit().setCalendarDisplayMode(CalendarMode.MONTHS).commit()
+                binding.expandButton.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24)
+            }
+        }
     }
 
     // Animation Functions
@@ -308,8 +321,6 @@ class Fragment03 : Fragment() {
                 .map{LocalDate.parse(it, DateTimeFormatter.ISO_DATE)}
                 .map{CalendarDay.from(it.year, it.monthValue, it.dayOfMonth)}
                 .toSet()
-
-
         return DotDecorator(Color.parseColor("#808080"), grayDotDates.minus(salmonDotDates))
     }
 }

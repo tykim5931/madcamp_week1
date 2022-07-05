@@ -19,5 +19,4 @@ class DotDecorator(
     override fun decorate(view: DayViewFacade?) {
         view?.addSpan(DotSpan(7.5F, color))
     }
-
 }

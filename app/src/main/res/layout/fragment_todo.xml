@@ -49,13 +49,23 @@
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:mcv_showOtherDates="all"
         app:mcv_selectionColor="@color/salmon"
+        app:mcv_calendarMode="week"
         app:layout_constraintTop_toBottomOf="@+id/top_bar"
+        />
+
+    <ImageButton
+        android:id="@+id/expand_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        app:srcCompat="@drawable/ic_baseline_keyboard_arrow_down_24"
+        android:backgroundTint="@color/white"
         />
 
 
@@ -66,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+        app:layout_constraintTop_toBottomOf="@+id/expand_button" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/more_button"
