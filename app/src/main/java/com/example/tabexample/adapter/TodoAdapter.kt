@@ -117,7 +117,7 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
     inner class ItemFilter: Filter() {
         override fun performFiltering(charSequence: CharSequence?): FilterResults {
 
-            val dateFormat = SimpleDateFormat("yyyy/MM/dd")
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd")
             val filterString = charSequence.toString()
             val results = FilterResults()
 

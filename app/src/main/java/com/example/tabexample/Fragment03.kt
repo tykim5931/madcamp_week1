@@ -27,8 +27,15 @@ import com.example.tabexample.databinding.FragmentTodoBinding
 import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.Phone
 import com.example.tabexample.model.ToDoItem
+import com.prolificinteractive.materialcalendarview.CalendarMode
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Fragment03 : Fragment() {
 
@@ -45,7 +52,11 @@ class Fragment03 : Fragment() {
 
     lateinit var mAdapter:TodoAdapter
     lateinit var todoList: MutableList<ToDoItem>
+
+    //Calendar-related variables
     lateinit var calDate: String
+    lateinit var selectedDate: CalendarDay
+    lateinit var calendarView: MaterialCalendarView
 
     // Animation variables & switch
     private val rotateOpen: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim)}
@@ -66,10 +77,17 @@ class Fragment03 : Fragment() {
         todoList = ToDoSource(requireContext()).loadTodoList() as ArrayList<ToDoItem>
         mAdapter = TodoAdapter(todoList)
         // initialize calDate
-        var calendarView = binding.calendarView
+        calendarView = binding.calendarView
+        selectedDate = CalendarDay.today()
+        calendarView.selectedDate = CalendarDay.today()
         val dateFormat = SimpleDateFormat("yyyy/MM/dd")
-        calDate = dateFormat.format(calendarView.getDate())
+//        calDate = dateFormat.format(selectedDate.date)
+        calDate = selectedDate.date.toString()
 
+//        val todayDecorator = TodayDecorator(this)
+//        calendarView.setDateTextAppearance(R.style.CustomDateTextAppearance)
+//        calendarView.setWeekDayTextAppearance(R.style.CustomWeekDayAppearance)
+//        calendarView.setHeaderTextAppearance(R.style.CustomHeaderTextAppearance)
         // initialize recycler view
         mAdapter.getFilter().filter(calDate)
         binding.recyclerTodo.adapter = mAdapter
@@ -97,9 +115,9 @@ class Fragment03 : Fragment() {
                 binding.recyclerTodo.layoutManager = LinearLayoutManager(context)
             }
         }
-
-        calendarView.setOnDateChangeListener{ calenderView, i, i2, i3 ->
-            calDate = "$i/${i2+1}/$i3"
+        calendarView.setOnDateChangedListener { widget, date, selected -> //                calendarView.removeDecorator(todayDecorator)
+            selectedDate = calendarView.selectedDate!!
+            calDate = date.date.toString()
             mAdapter.getFilter().filter(calDate)
             binding.recyclerTodo.adapter = mAdapter
             binding.recyclerTodo.layoutManager = LinearLayoutManager(context)
@@ -152,13 +170,25 @@ class Fragment03 : Fragment() {
 
         binding.deleteButton.setOnClickListener{
             var checklist : List<CheckBoxData> = mAdapter.checkBoxList.filter{it.checked} // filter checked img
+            todoList = ToDoSource(requireContext()).loadTodoList() as MutableList<ToDoItem>
             if(!checklist.isEmpty() && !todoList.isEmpty()){
-                for (item in checklist){
-                    val idx : Int = todoList.map{it.id}.indexOf(item.id)
-                    if(idx != -1) {
-                        todoList.removeAt(idx)
-                        println("list length: ${todoList.size}")
-                    }
+                println("After : ")
+                todoList.forEach{
+                    println("id : ${it.id} / content : ${it.contents}")
+                }
+//                for (item in checklist){
+//                    val idx : Int = todoList.map{it.id}.indexOf(item.id)
+//                    if(idx != -1) {
+//                        todoList.removeAt(idx)
+//                        Log.i("listlength","list length: ${todoList.size}")
+//                    }
+//                }
+                todoList = todoList.filter{
+                    !checklist.map{item -> item.id}.contains(it.id)
+                }.toMutableList()
+                println("After : ")
+                todoList.forEach{
+                    println("id : ${it.id} / content : ${it.contents}")
                 }
                 ToDoSource(requireContext()).saveTodoList(todoList)
                 mAdapter = TodoAdapter(todoList) // update mAdapter

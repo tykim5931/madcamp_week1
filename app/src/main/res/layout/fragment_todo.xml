@@ -24,7 +24,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="8dp"
                 android:text="To Do"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.017"
@@ -47,14 +47,17 @@
 
     </LinearLayout>
 
-    <CalendarView
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/top_bar">
-    </CalendarView>
+        app:mcv_showOtherDates="all"
+        app:mcv_selectionColor="@color/salmon"
+        app:layout_constraintTop_toBottomOf="@+id/top_bar"
+        />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_todo"
