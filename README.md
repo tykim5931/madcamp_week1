@@ -15,16 +15,22 @@
 > Tab1의 contacts에서는 휴대전화의 연락처를 불러와 선택한 연락처를 저장할 수 있다. 삭제 버튼을 이용해 연락처를 선택해 삭제할 수 있다. 기본 레이아웃인 이름을 클릭하면 해당 연락처의 상세정보, 전화 및 문자 버튼이 노출되며 버튼을 누르면 해당 번호로 전화와 문자전송이 가능하다.  
 > 
 > <img src = "https://user-images.githubusercontent.com/67325264/177312210-c2644eb1-270e-433f-959e-bc63cd35385b.gif" height="300"/> <img src ="https://user-images.githubusercontent.com/67325264/177314318-5c078217-f17e-4b69-ba39-55e570c198c3.gif" height="300"/> <img src ="https://user-images.githubusercontent.com/67325264/177313231-6e44ce4b-0f1b-4f00-894f-8af7bc544fca.gif" height="300"/> <img src ="https://user-images.githubusercontent.com/67325264/177320092-806113ee-2751-4b67-bb64-dbd701d3f078.jpg" height="300"/>  
+> 
 >  연락처 추가   연락처 삭제   전화걸기, 문자전송 연락처 검색&상세정보
 
 
 ### Tab2: Gallery
-> Tab2의 갤러리에서는 Tab1 연락처와 같이 휴대전화 갤러리로부터 추가 및 삭제가 가능하다. 각 3개의 열로 배열되며 원하는 사진을 모아 볼 수 있다.
-> <img src = "https://user-images.githubusercontent.com/67325264/177320427-aa82602a-5b8d-486c-8580-e0ca63e42a40.jpg" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177320493-db8147cb-2078-4842-a70d-02efe259f06e.jpg" height="300"/>
+> Tab2의 갤러리에서는 Tab1 연락처와 같이 휴대전화 갤러리로부터 추가 및 삭제가 가능하다. 각 3개의 열로 배열되며 원하는 사진을 모아 볼 수 있다. 휴대전화 갤러리에서 삭제되더라도 어플리케이션에 저장된 이미지는 보존된다.  
+>  
+> <img src = "https://user-images.githubusercontent.com/67325264/177320427-aa82602a-5b8d-486c-8580-e0ca63e42a40.jpg" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177320493-db8147cb-2078-4842-a70d-02efe259f06e.jpg" height="300"/>  
+> 
 >   사진 추가     사진 삭제   
 
 ### Tab3: To-do list
-> <img src = "https://user-images.githubusercontent.com/67325264/177316143-a097d1a0-d3e4-4037-8caa-941762af833b.gif" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177316655-1e3fe915-909e-4ebc-a270-b91a5d325437.gif" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177317092-91056966-f0ac-4598-b2e2-6929fd694d92.gif" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177317679-afb63b6b-46b4-455a-88f8-b2cce56b00ec.gif" height="300"/>
+> 투두리스트에는 원하는 날짜에 원하는 일정을 추가할 수 있다. Calendar는 week view와 month view로 축소 및 확대가 가능하다. 날짜를 선택하면 그 날의 할 일을 확인해 볼 수 있으며, 할일이 저장된 날짜에는 dot으로 표시가 된다. 할일의 상태는 엑스, 체크, 세모로 각각 진행중, 완료, 보류로 표시할 수 있다. 어떤 날짜에 저장된 모든 할 일이 완료상태가 되면 해당 날짜의 dot 표기는 사라진다. 모두 보류 표시될 경우 dot는 회색으로 표시된다. 할일을 잘 확인하고 수행해서 생산적인 사람이 되도록 하자.  
+> 
+> <img src = "https://user-images.githubusercontent.com/67325264/177316143-a097d1a0-d3e4-4037-8caa-941762af833b.gif" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177316655-1e3fe915-909e-4ebc-a270-b91a5d325437.gif" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177317092-91056966-f0ac-4598-b2e2-6929fd694d92.gif" height="300"/> <img src = "https://user-images.githubusercontent.com/67325264/177317679-afb63b6b-46b4-455a-88f8-b2cce56b00ec.gif" height="300"/>  
+> 
 >  Calender 확대    할일 추가    상태 표시     할일 삭제
 
 ### 구현
