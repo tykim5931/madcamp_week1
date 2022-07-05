@@ -3,6 +3,7 @@ package com.example.tabexample
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Window
 import android.widget.TextView
@@ -29,8 +30,12 @@ class TodoActivity : AppCompatActivity() {
         _binding = ActivityTodoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val recievedIntent: Intent = getIntent()
+        val calDate: String? = recievedIntent.getStringExtra("date")
+        Log.i("Tag","recieved Date: $calDate")
+        binding.dateText.text = calDate
+
         binding.finish.setOnClickListener(){
-//            val date = binding.editTextDate.text.toString()
             val contents = binding.editTextContents.text.toString()
             if(contents.isEmpty()){
                 val toast = Toast.makeText(this, "Please write valid info", Toast.LENGTH_SHORT)

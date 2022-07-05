@@ -1,6 +1,7 @@
 package com.example.tabexample.adapter
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,17 +71,20 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
                     R.id.done -> {
                         unfilteredList[pos].done = 1
                         progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
-                        textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
+                        textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG)
+                        textView.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
                     }
                     R.id.inProgress -> {
                         unfilteredList[pos].done = 0
                         progressBtn.setImageResource(R.drawable.ic_baseline_clear_24)
+                        textView.setPaintFlags(0)
                         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
                     }
                     R.id.postpone -> {
                         unfilteredList[pos].done = 2
                         progressBtn.setImageResource(R.drawable.ic_baseline_change_history_24)
-                        textView.setTextColor(ContextCompat.getColor(context, R.color.black))
+                        textView.setPaintFlags(0)
+                        textView.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
                     }
                 }
                 radioButton.isChecked = false
@@ -94,15 +98,18 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
             this.textView.text = todo.contents
             if(todo.done == 1){
                 progressBtn.setImageResource(R.drawable.ic_baseline_check_24)
-                textView.setTextColor(ContextCompat.getColor(context, R.color.gray))
+                textView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG)
+                textView.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
             }
             else if(todo.done == 0){
                 progressBtn.setImageResource(R.drawable.ic_baseline_clear_24)
+                textView.setPaintFlags(0)
                 textView.setTextColor(ContextCompat.getColor(context, R.color.black))
             }
             else{
                 progressBtn.setImageResource(R.drawable.ic_baseline_change_history_24)
-                textView.setTextColor(ContextCompat.getColor(context, R.color.black))
+                textView.setPaintFlags(0)
+                textView.setTextColor(ContextCompat.getColor(context, R.color.lightgray))
             }
         }
     }
