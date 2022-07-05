@@ -2,6 +2,8 @@ package com.example.tabexample
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
@@ -13,6 +15,7 @@ import android.view.animation.AnimationUtils
 import android.widget.CalendarView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +27,7 @@ import com.example.tabexample.data.PhoneBookSource
 import com.example.tabexample.data.ToDoSource
 import com.example.tabexample.databinding.FragmentContactBinding
 import com.example.tabexample.databinding.FragmentTodoBinding
+import com.example.tabexample.decorator.DotDecorator
 import com.example.tabexample.model.CheckBoxData
 import com.example.tabexample.model.Phone
 import com.example.tabexample.model.ToDoItem
@@ -34,6 +38,7 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -57,7 +62,8 @@ class Fragment03 : Fragment() {
     lateinit var calDate: String
     lateinit var selectedDate: CalendarDay
     lateinit var calendarView: MaterialCalendarView
-
+    lateinit var salmonDotDecorator: DotDecorator
+    lateinit var grayDotDecorator: DotDecorator
     // Animation variables & switch
     private val rotateOpen: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_open_anim)}
     private val rotateClose: Animation by lazy{ AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_close_anim)}
@@ -72,6 +78,7 @@ class Fragment03 : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         // get to-do from json file
         todoList = ToDoSource(requireContext()).loadTodoList() as ArrayList<ToDoItem>
@@ -83,8 +90,10 @@ class Fragment03 : Fragment() {
         val dateFormat = SimpleDateFormat("yyyy/MM/dd")
 //        calDate = dateFormat.format(selectedDate.date)
         calDate = selectedDate.date.toString()
-
-//        val todayDecorator = TodayDecorator(this)
+        salmonDotDecorator = generateSalmonDotDecorator()
+        grayDotDecorator = generateGrayDotDecorator()
+        calendarView.addDecorator(salmonDotDecorator)
+        calendarView.addDecorator(grayDotDecorator)
 //        calendarView.setDateTextAppearance(R.style.CustomDateTextAppearance)
 //        calendarView.setWeekDayTextAppearance(R.style.CustomWeekDayAppearance)
 //        calendarView.setHeaderTextAppearance(R.style.CustomHeaderTextAppearance)
@@ -108,6 +117,12 @@ class Fragment03 : Fragment() {
                 if(id !in todoList.map{it.id}){    // 만약 중복되지 않는 todo이면
                     todoList.add(todoItem) // 결과목록에 추가
                 }
+                calendarView.removeDecorator(salmonDotDecorator)
+                calendarView.removeDecorator(grayDotDecorator)
+                salmonDotDecorator = generateSalmonDotDecorator()
+                grayDotDecorator = generateGrayDotDecorator()
+                calendarView.addDecorator(salmonDotDecorator)
+                calendarView.addDecorator(grayDotDecorator)
                 ToDoSource(requireContext()).saveTodoList(todoList)
                 mAdapter = TodoAdapter(todoList)
                 mAdapter.getFilter().filter(calDate)
@@ -117,10 +132,15 @@ class Fragment03 : Fragment() {
         }
         calendarView.setOnDateChangedListener { widget, date, selected -> //                calendarView.removeDecorator(todayDecorator)
             selectedDate = calendarView.selectedDate!!
+            calendarView.removeDecorator(salmonDotDecorator)
+            calendarView.removeDecorator(grayDotDecorator)
+            salmonDotDecorator = generateSalmonDotDecorator()
+            grayDotDecorator = generateGrayDotDecorator()
+            calendarView.addDecorator(salmonDotDecorator)
+            calendarView.addDecorator(grayDotDecorator)
             calDate = date.date.toString()
             mAdapter.getFilter().filter(calDate)
             binding.recyclerTodo.adapter = mAdapter
-            binding.recyclerTodo.layoutManager = LinearLayoutManager(context)
         }
 
         //On-click listeners
@@ -148,7 +168,6 @@ class Fragment03 : Fragment() {
             mAdapter.updateCB(View.VISIBLE)    // 체크박스 모두노출
             mAdapter.getFilter().filter(calDate)
             binding.recyclerTodo.adapter = mAdapter
-            binding.recyclerTodo.layoutManager = LinearLayoutManager(context)
 
             menuStatus = Fragment01.DELETE_MENU
             setVisibility(menuStatus)
@@ -161,7 +180,6 @@ class Fragment03 : Fragment() {
             mAdapter.updateCB(View.GONE)    // 체크박스 안보이게
             mAdapter.getFilter().filter(calDate)
             binding.recyclerTodo.adapter = mAdapter
-            binding.recyclerTodo.layoutManager = LinearLayoutManager(context)
             menuStatus = Fragment01.EXPANDED_MENU
             setVisibility(menuStatus)
             setAnimation(menuStatus)
@@ -172,34 +190,24 @@ class Fragment03 : Fragment() {
             var checklist : List<CheckBoxData> = mAdapter.checkBoxList.filter{it.checked} // filter checked img
             todoList = ToDoSource(requireContext()).loadTodoList() as MutableList<ToDoItem>
             if(!checklist.isEmpty() && !todoList.isEmpty()){
-                println("After : ")
-                todoList.forEach{
-                    println("id : ${it.id} / content : ${it.contents}")
-                }
-//                for (item in checklist){
-//                    val idx : Int = todoList.map{it.id}.indexOf(item.id)
-//                    if(idx != -1) {
-//                        todoList.removeAt(idx)
-//                        Log.i("listlength","list length: ${todoList.size}")
-//                    }
-//                }
                 todoList = todoList.filter{
                     !checklist.map{item -> item.id}.contains(it.id)
                 }.toMutableList()
-                println("After : ")
-                todoList.forEach{
-                    println("id : ${it.id} / content : ${it.contents}")
-                }
                 ToDoSource(requireContext()).saveTodoList(todoList)
+                calendarView.removeDecorator(salmonDotDecorator)
+                calendarView.removeDecorator(grayDotDecorator)
+                salmonDotDecorator = generateSalmonDotDecorator()
+                grayDotDecorator = generateGrayDotDecorator()
+                calendarView.addDecorator(salmonDotDecorator)
+                calendarView.addDecorator(grayDotDecorator)
                 mAdapter = TodoAdapter(todoList) // update mAdapter
                 mAdapter.getFilter().filter(calDate)
-                binding.recyclerTodo.adapter = mAdapter
-                binding.recyclerTodo.layoutManager = LinearLayoutManager(context)
                 menuStatus = Fragment01.SHRUNKEN_MENU
                 setVisibility(menuStatus)
                 listOf(binding.moreButton)
                     .forEach{it.startAnimation(rotateClose)}
                 setClickable(menuStatus)
+                binding.recyclerTodo.adapter = mAdapter
             }
         }
     }
@@ -268,6 +276,41 @@ class Fragment03 : Fragment() {
                 allSet.minus(clickableSet).forEach{it.isClickable = false}
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun generateSalmonDotDecorator(): DotDecorator {
+        val salmonDotDates =
+            todoList
+                .filter{it.done==0}
+                .map{it.date}
+                .map{LocalDate.parse(it, DateTimeFormatter.ISO_DATE)}
+                .map{CalendarDay.from(it.year, it.monthValue, it.dayOfMonth)}
+                .toSet()
+
+        return DotDecorator(Color.parseColor("#DD5151"), salmonDotDates)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun generateGrayDotDecorator(): DotDecorator {
+        val salmonDotDates =
+            todoList
+                .filter{it.done==0}
+                .map{it.date}
+                .map{LocalDate.parse(it, DateTimeFormatter.ISO_DATE)}
+                .map{CalendarDay.from(it.year, it.monthValue, it.dayOfMonth)}
+                .toSet()
+
+        val grayDotDates =
+            todoList
+                .filter{it.done==2}
+                .map{it.date}
+                .map{LocalDate.parse(it, DateTimeFormatter.ISO_DATE)}
+                .map{CalendarDay.from(it.year, it.monthValue, it.dayOfMonth)}
+                .toSet()
+
+
+        return DotDecorator(Color.parseColor("#808080"), grayDotDates.minus(salmonDotDates))
     }
 }
 

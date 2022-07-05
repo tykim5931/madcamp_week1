@@ -44,19 +44,21 @@ class ToDoSource(private val context: Context) {
     }
 
     fun saveTodoList(todoList:List<ToDoItem>){
-        val json = JSONArray()
-        for (item in todoList)
-        {
-            val jsonObject = JSONObject()
-            jsonObject.put("id", item.id)
-            jsonObject.put("date", item.date)
-            jsonObject.put("contents", item.contents)
-            jsonObject.put("done", item.done)
-            json.put(jsonObject)
-        }
+//
+//        val json = JSONArray()
+//        for (item in todoList)
+//        {
+//            val jsonObject = JSONObject()
+//            jsonObject.put("id", item.id)
+//            jsonObject.put("date", item.date)
+//            jsonObject.put("contents", item.contents)
+//            jsonObject.put("done", item.done)
+//            json.put(jsonObject)
+//        }
         val fileName = "todolist.json"
         context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
-            it.write(json.toString().toByteArray())
+//            it.write(json.toString().toByteArray())
+            it.write(Klaxon().toJsonString(todoList).toByteArray())
             it.close()
         }
     }

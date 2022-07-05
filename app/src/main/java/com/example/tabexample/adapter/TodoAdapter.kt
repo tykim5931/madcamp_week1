@@ -42,6 +42,8 @@ class TodoAdapter(val list: List<ToDoItem>) : RecyclerView.Adapter<TodoAdapter.H
             this.checkBox.visibility = ck
             if(pos >= checkBoxList.size)
                 checkBoxList.add(pos, CheckBoxData(id,false))
+            else
+                checkBoxList[pos] = CheckBoxData(id,false)
             checkBox.isChecked = checkBoxList[pos].checked
             checkBox.setOnClickListener {
                 if(checkBox.isChecked)
